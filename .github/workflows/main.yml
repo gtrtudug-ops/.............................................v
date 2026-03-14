@@ -1,0 +1,28 @@
+name: Max CPU Cluster 2026
+on: workflow_dispatch
+
+jobs:
+  multi:
+    # Uses the 4 vCPU / 16 GB RAM public runner spec
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # 10 parallel jobs = 40 total vCPUs (Public Repo)
+        os: [ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest]
+    
+    steps:
+      - name: Start tmate SSH
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
+      - name: Verify 4 vCPU Hardware
+        run: |
+          echo "Checking Processor Specs..."
+          echo "CPU Cores: $(nproc)"
+          echo "Total RAM: $(free -h | grep Mem | awk '{print $2}')"
+          echo "Architecture: $(uname -m)"
+
+      - name: Keep Runner Alive (6 Hours)
+        run: sleep 21600
