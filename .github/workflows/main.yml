@@ -1,29 +1,20 @@
-name: Max CPU Cluster 2026
+name: ubuntu CPU (4)
 on: workflow_dispatch
 
 jobs:
   multi:
-    # 4 vCPU / 16 GB RAM per runner (Public Repo Spec)
+    # 4 vCPU / 16 GB RAM (Public Repo)
     runs-on: ubuntu-latest
-    
-    strategy:
-      fail-fast: false
-      matrix:
-        # 10 parallel jobs = 40 total vCPUs
-        id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    
     steps:
-      - name: Start tmate SSH
-        uses: mxschmitt/action-tmate@v3
-        # FIXED: No SSH key required on your profile now
-        # Check logs for the 'https://tmate.io...' web link
-
-      - name: Verify Hardware Specs
+      - name: 1. Verify Hardware Specs
         run: |
-          echo "Job Number: ${{ matrix.id }}"
           echo "CPU Cores: $(nproc)"
           echo "Total RAM: $(free -h | grep Mem | awk '{print $2}')"
-          echo "Architecture: $(uname -m)"
 
-      - name: Keep Runner Alive (6 Hours)
+      - name: 2. Start tmate SSH
+        uses: mxschmitt/action-tmate@v3
+        # Removed the 'limit-access' line to fix your SSH key error.
+        # Just click the Web Shell link in your logs to enter!
+
+      - name: 3. Keep Runner Alive (6 Hours)
         run: sleep 21600
