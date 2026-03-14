@@ -3,23 +3,24 @@ on: workflow_dispatch
 
 jobs:
   multi:
-    # Uses the 4 vCPU / 16 GB RAM public runner spec
-    runs-on: ${{ matrix.os }}
+    # 4 vCPU / 16 GB RAM per runner (Public Repo Spec)
+    runs-on: ubuntu-latest
+    
     strategy:
       fail-fast: false
       matrix:
-        # 10 parallel jobs = 40 total vCPUs (Public Repo)
-        os: [ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest, ubuntu-latest]
+        # 10 parallel jobs = 40 total vCPUs
+        id: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     
     steps:
       - name: Start tmate SSH
         uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
+        # FIXED: No SSH key required on your profile now
+        # Check logs for the 'https://tmate.io...' web link
 
-      - name: Verify 4 vCPU Hardware
+      - name: Verify Hardware Specs
         run: |
-          echo "Checking Processor Specs..."
+          echo "Job Number: ${{ matrix.id }}"
           echo "CPU Cores: $(nproc)"
           echo "Total RAM: $(free -h | grep Mem | awk '{print $2}')"
           echo "Architecture: $(uname -m)"
